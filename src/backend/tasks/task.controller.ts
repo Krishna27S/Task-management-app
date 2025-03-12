@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, HttpStatus, HttpException } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 
 @Controller('tasks')
@@ -7,25 +7,41 @@ export class TasksController {
 
   @Get()
   async findAll() {
-    console.log('GET /tasks - Fetching all tasks');
-    return this.tasksService.findAll();
+    try {
+      const tasks = await this.tasksService.findAll();
+      return tasks;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Post()
   async create(@Body() createTaskDto: any) {
-    console.log('POST /tasks - Creating task:', createTaskDto);
-    return this.tasksService.create(createTaskDto);
+    try {
+      const task = await this.tasksService.create(createTaskDto);
+      return task;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateTaskDto: any) {
-    console.log(`PUT /tasks/${id} - Updating task:`, updateTaskDto);
-    return this.tasksService.update(id, updateTaskDto);
+    try {
+      const task = await this.tasksService.update(id, updateTaskDto);
+      return task;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    console.log(`DELETE /tasks/${id} - Deleting task`);
-    return this.tasksService.remove(id);
+    try {
+      await this.tasksService.remove(id);
+      return { message: 'Task deleted successfully' };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }
