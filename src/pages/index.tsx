@@ -14,9 +14,10 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="space-y-8">
-          <TaskForm />
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold text-center mb-8">Task Management</h1>
+        <TaskForm />
+        <div className="mt-8">
           <TaskList />
         </div>
       </div>
